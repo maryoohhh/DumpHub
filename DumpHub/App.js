@@ -48,10 +48,18 @@
 //   }
 // }
 
-import SignUp from "./src/components/screens/SignUp";
+// import SignUp from "./src/components/screens/SignUp";
+
+// export default function App() {
+//   return (
+//     <SignUp />
+//   )
+// }
+
+import SignIn from "./src/components/screens/SignIn";
 
 export default function App() {
   return (
-    <SignUp />
+    <SignIn />
   )
 }

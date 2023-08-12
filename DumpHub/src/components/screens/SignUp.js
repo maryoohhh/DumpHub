@@ -16,7 +16,7 @@ const SignUp = () => {
         alert("Sign Up Successful");
     }
 
-    const logo = require("/workspaces/DumpHub/DumpHub/assets/icon.png"); 
+    const logo = require("/workspaces/DumpHub/DumpHub/assets/logo.png"); 
 
     return (
         <KeyboardAwareScrollView contentContainerStyle = {styles.container}>
@@ -42,7 +42,9 @@ const SignUp = () => {
                 <TouchableOpacity onPress = {handleSubmit} style = {styles.buttonStyle}>
                     <Text style = {styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
-                <Text  style = {{ marginHorizontal: 24 }}>{JSON.stringify({ name, email, password })}</Text>
+                <Text  style = {{ fontSize: 12, textAlign: 'center' }}>
+                    Already Joined? Sign In
+                </Text>
             </View>
         </KeyboardAwareScrollView>
     );
