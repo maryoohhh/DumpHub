@@ -1,22 +1,32 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from '../../context/auth';
 
-const SignIn = () => {
-    const [name, setName] = useState("");
+const SignIn = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [state, setState] = useContext(AuthContext);
 
     const handleSubmit = async () => {
-        if (name === '' || email === '' || password === '') {
+        if (email === '' || password === '') {
             alert("All fields are required");
             return;
         }
-        await axios.post("http://localhost:8001/api/signin", { name, email, password });
-        alert("Sign In Successful");
+        const resp = await axios.post("https://localhost:8000/api/signin", { email, password });
+        if(resp.data.error)
+            alert(resp.data.error)
+        else {
+            setState(resp.data);
+            await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data));    
+            alert("Sign In Successful");
+            navigation.navigate("Main");
+        }
     };
 
-    const logo = require("/workspaces/DumpHub/DumpHub/assets/logo.png"); 
+    const logo = require("/workspaces/DumpHub/DumpHub/client/assets/logo.png"); 
 
     return (
         <KeyboardAwareScrollView contentCotainerStyle={styles.container}>
@@ -36,7 +46,13 @@ const SignIn = () => {
                 <TouchableOpacity onPress={handleSubmit} style={styles.buttonStyle}>
                     <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
-                <Text style={{ fontSize: 12, textAlign: 'center' }}>Not yet registered? Sign Up</Text>
+                <Text style={{ fontSize: 12, textAlign: 'center' }}>
+                    Not yet registered? {" "}
+                    <Text style = {{ color: 'darkred', fontWeight: 'bold' }}
+                        onPress = {() => navigation.navigate("SignUp")}>
+                        Sign Up
+                    </Text>
+                </Text>
                 <Text style={{ fontSize: 12, textAlign: 'center', marginTop: 10 }}>Forgot Password?</Text>
             </View>
         </KeyboardAwareScrollView>

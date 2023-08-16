@@ -56,10 +56,28 @@
 //   )
 // }
 
-import SignIn from "./src/components/screens/SignIn";
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+
+// Screens
+import SignIn from './src/components/screens/SignIn';
+import SignUp from "./src/components/screens/SignUp";
+import { AuthProvider } from "./src/context/auth";
+import Main from "./src/components/screens/Main";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <SignIn />
-  )
+    <NavigationContainer>
+      <AuthProvider>
+        <Stack.Navigator initialRouteName="SignIn">
+          <Stack.Screen name = "SignUp" component = {SignUp} />
+          <Stack.Screen name = "SignIn" component = {SignIn} />
+          <Stack.Screen name = "Home" component = {Main} />
+        </Stack.Navigator>
+      </AuthProvider>
+    </NavigationContainer>
+  );
 }
