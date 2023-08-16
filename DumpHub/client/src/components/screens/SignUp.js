@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,14 +9,19 @@ const SignUp = ({ navigation }) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [state, setState] = useState(AuthContext);
+    const [state, setState] = useContext(AuthContext);
     
     const handleSubmit = async () => {
         if (name === '' || email === '' || password === '') {
             allert("All fields are required");
             return;
         }
-        const resp = await axios.post("https://localhost:8000/api/signup", {name, email, password});
+        const resp = await axios.post("https://beige-poets-behave.loca.lt/api/signup", {name, email, password}, {timeout: 2})
+                                .catch(err => {
+                                    console.log(err.code);
+                                    console.log(err.message);
+                                    console.log(err.stack);
+                                });
         if(resp.data.error)
             alert(resp.data.error)
         else {

@@ -18,7 +18,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow DumpHub to access your location.",
-        "UIBackgroundModes": ["location", "fetch"]
+        "UIBackgroundModes": ["location", "fetch"],
+        "NSAllowArbitraryLoads": "YES"
       }
     },
     "android": {

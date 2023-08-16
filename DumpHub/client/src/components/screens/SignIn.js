@@ -15,7 +15,12 @@ const SignIn = ({ navigation }) => {
             alert("All fields are required");
             return;
         }
-        const resp = await axios.post("https://localhost:8000/api/signin", { email, password });
+        const resp = await axios.post("https://beige-poets-behave.loca.lt/api/signin", { email, password }, {timeout: 2})
+                                .catch(err => {
+                                    console.log(err.code);
+                                    console.log(err.message);
+                                    console.log(err.stack);
+                                });
         if(resp.data.error)
             alert(resp.data.error)
         else {
