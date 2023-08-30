@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-class Map extends Component {
+class Sample extends Component {
     render() {
         return (
             <View>
@@ -11,4 +11,4 @@ class Map extends Component {
     }
 }
 
-export default Map;
+export default Sample;

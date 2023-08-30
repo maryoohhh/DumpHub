@@ -56,28 +56,39 @@
 //   )
 // }
 
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
+// import React from "react";
+// import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// import { NavigationContainer } from "@react-navigation/native";
 
 // Screens
-import SignIn from './src/components/screens/SignIn';
-import SignUp from "./src/components/screens/SignUp";
-import { AuthProvider } from "./src/context/auth";
-import Main from "./src/components/screens/Main";
+// import SignIn from './src/components/screens/SignIn';
+// import SignUp from "./src/components/screens/SignUp";
+// import { AuthProvider } from "./src/context/auth";
+// import Home from "./src/components/screens/Home";
+// import Navigation from "./src/components/Navigation";
 
-const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
+
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <AuthProvider>
+//         <Stack.Navigator initialRouteName="Home">
+//           <Navigation />
+//           {/* <Stack.Screen name = "SignUp" component = {SignUp} />
+//           <Stack.Screen name = "SignIn" component = {SignIn} />
+//           <Stack.Screen name = "Home" component = {Home} /> */}
+//         </Stack.Navigator>
+//       </AuthProvider>
+//     </NavigationContainer>
+//   )
+// }
+
+import React from "react";
+import Navigation from "./src/components/Navigation";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <AuthProvider>
-        <Stack.Navigator initialRouteName="SignIn">
-          <Stack.Screen name = "SignUp" component = {SignUp} />
-          <Stack.Screen name = "SignIn" component = {SignIn} />
-          <Stack.Screen name = "Home" component = {Main} />
-        </Stack.Navigator>
-      </AuthProvider>
-    </NavigationContainer>
-  );
+    <Navigation />
+  )
 }

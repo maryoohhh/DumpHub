@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useRef } from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 // import Geolocation from '@react-native-community/geolocation';
+
+import config from "../../config/index"
 
 class Map extends Component {
     constructor() {
@@ -27,6 +29,10 @@ class Map extends Component {
             }
             ]
         };
+    }
+
+    getRestrooms() {
+        fetch('${config.url}api/restrooms')
     }
     
     render() {
@@ -71,7 +77,7 @@ class Map extends Component {
                     description={'This is a description of the marker'}
                 /> */}
                 <GooglePlacesAutocomplete
-                placeholder="Type a place"
+                placeholder="Search"
                 onPress={(data, details = null) => console.log(data, details)}
                 query={{key: 'AIzaSyAFEDZC2XNZPGRH04T9nMN4Zq9bGwIxF3o',
                         components: 'country:us',
@@ -80,6 +86,7 @@ class Map extends Component {
                 onFail={error => console.log(error)}
                 onNotFound={() => console.log('no results')}
                 currentLocation={true}
+                currentLocationLabel='Current Location'
                 minLength={2}
                 autoFocus={false}
                 returnKeyType={'default'}

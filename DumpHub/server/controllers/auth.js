@@ -1,15 +1,22 @@
-import User from "../models/user";
-import { hashPassword, comparePassword } from "../helpers/auth";
-import jwt from "jsonwebtoken";
-import nanoid from "nanoid";
+const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const { hashPassword, comparePassword } = require("../helpers/auth");
+const { nanoid } = require("nanoid");
+const cloudinary = require("cloudinary");
+
+// cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET,
+});
 
 // sendgrid
 require("dotenv").config();
-
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
-export const signup = async (req, res) => {
+exports.signup = async (req, res) => {
     console.log("Signup Hit");
     try {
         // validation
@@ -53,8 +60,8 @@ export const signup = async (req, res) => {
             //   console.log(user);
             const { password, ...rest } = user._doc;
             return res.json({
-            token,
-            user: rest,
+                token,
+                user: rest,
             });
         } catch (err) {
             console.log(err);
@@ -64,7 +71,7 @@ export const signup = async (req, res) => {
     }
 };
 
-export const signin = async (req, res) => {
+exports.signin = async (req, res) => {
     // console.log(req.body);
     try {
         const { email, password } = req.body;
@@ -72,25 +79,25 @@ export const signin = async (req, res) => {
         const user = await User.findOne({ email });
         if (!user) {
             return res.json({
-            error: "No user found",
+                error: "No user found",
             });
         }
         // check password
         const match = await comparePassword(password, user.password);
         if (!match) {
             return res.json({
-            error: "Wrong password",
+                error: "Wrong password",
             });
         }
         // create signed token
         const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "7d",
+            expiresIn: "7d",
         });
         user.password = undefined;
         user.secret = undefined;
         res.json({
-        token,
-        user,
+            token,
+            user,
         });
     } catch (err) {
         console.log(err);
@@ -98,7 +105,7 @@ export const signin = async (req, res) => {
     }
 };
 
-export const forgotPassword = async (req, res) => {
+exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
     // find user by email
     const user = await User.findOne({ email });
@@ -129,7 +136,7 @@ export const forgotPassword = async (req, res) => {
     }
 };
 
-export const resetPassword = async (req, res) => {
+exports.resetPassword = async (req, res) => {
     try {
         const { email, password, resetCode } = req.body;
         // find user based on email and resetCode
@@ -150,6 +157,34 @@ export const resetPassword = async (req, res) => {
         user.resetCode = "";
         user.save();
         return res.json({ ok: true });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.uploadImage = async (req, res) => {
+    try {
+        const result = await cloudinary.UploadStream.upload(req.body.image, {
+            public_id: nanoid(),
+            resource_tyoe: "jpg",
+        });
+        console.log(req.body.user);
+        const user = await User.findByIdAndUpdate(
+            req.body.user._id,
+            {
+                image: {
+                    public_id: result.public_id,
+                    url: result.secure_url,
+                },
+            },
+            { new: true }
+        );
+        return res.json({
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            image: user.image,
+        });
     } catch (err) {
         console.log(err);
     }
