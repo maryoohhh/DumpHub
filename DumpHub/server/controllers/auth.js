@@ -123,7 +123,7 @@ exports.forgotPassword = async (req, res) => {
         from: process.env.EMAIL_FROM,
         to: user.email,
         subject: "Password reset code",
-        html: "<h1>Your password  reset code is: {resetCode}</h1>"
+        html: `<h1>Your password  reset code is: ${resetCode}</h1>`
     };
     // send email
     try {
@@ -148,7 +148,7 @@ exports.resetPassword = async (req, res) => {
         // if password is short
         if (!password || password.length < 6) {
             return res.json({
-            error: "Password is required and should be 6 characters long",
+                error: "Password is required and should be 6 characters long",
             });
         }
         // hash password
@@ -185,6 +185,29 @@ exports.uploadImage = async (req, res) => {
             role: user.role,
             image: user.image,
         });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.updatePassword = async (req, res) => {
+    try {
+        const { password } = req.body;
+        console.log(req.body.user.user._id)
+        if (password && password.lenght < 6) {
+            return res.json({
+                error: "Password is required and should be min 6 characters long",
+            });
+        } else {
+            // update db
+            const hashedPassword = await hashPassword(password);
+            const user = await User.findByIdAndUpdate(req.body.user.user._id, {
+                password: hashedPassword,
+            });
+            user.password = undefined;
+            user.secret = undefined;
+            return res.json(user);
+        }
     } catch (err) {
         console.log(err);
     }

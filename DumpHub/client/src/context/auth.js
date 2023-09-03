@@ -1,3 +1,4 @@
+import React, { useState, useEffect, createContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -6,7 +7,7 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const [state, setState] = useState({
-        user: {},
+        user: null,
         token: "",
     });
 
@@ -26,7 +27,7 @@ const AuthProvider = ({ children }) => {
             let res = error.response;
             if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
                 await AsyncStorage.removeItem("auth-rn");
-                setState({ user: null, token: "" });
+                setState({ user: nullo, token: "" });
                 navigation.navigate("SignIn");
             }
         }

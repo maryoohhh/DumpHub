@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // controllers
-const { signup, signin, forgotPassword, resetPassword, uploadImage } = require("../controllers/auth");
+const { signup, signin, forgotPassword, resetPassword, uploadImage, updatePassword } = require("../controllers/auth");
 
 router.get("/", (req, res) => {
     return res.json({
@@ -15,5 +15,6 @@ router.post("/signin", signin);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.post("/upload-image", uploadImage);
+router.post("/update-password", updatePassword)
 
 module.exports = router;
