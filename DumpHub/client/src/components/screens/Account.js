@@ -32,7 +32,7 @@ const Account = ({ navigation }) => {
             let storedData = await AsyncStorage.getItem("auth-rn");
             const user = JSON.parse(storedData);
             console.log(user)
-            const resp = await axios.post("http://localhost:8000/api/update-password", { password, user });
+            const resp = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.app.github.dev/api/update-password", { password, user });
             const data = resp.data;
             if(data.error)
                 alert(data.error)
@@ -65,7 +65,7 @@ const Account = ({ navigation }) => {
 
         let storedData = await AsyncStorage.getItem("auth-rn");
         const parsed = JSON.parse(storedData);
-        const { data } = await axios.post("http://localhost:8000/api/upload-image", {
+        const { data } = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.app.github.dev/api/upload-image", {
             image: base64Image,
             user: parsed.user
         });
