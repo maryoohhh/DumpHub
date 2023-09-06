@@ -11,7 +11,7 @@ import HeaderTabs from './header/HeaderTabs';
 import Account from "./screens/Account";
 import Collections from "./screens/Collections";
 import More from "./screens/More";
-import ForgotPassword from './screens/ForgotPassword';
+import ForgorPassword from './screens/forgotPassword';
 
 const Stack = createNativeStackNavigator();
 

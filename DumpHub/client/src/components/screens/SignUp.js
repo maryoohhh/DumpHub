@@ -16,7 +16,7 @@ const SignUp = ({ navigation }) => {
             allert("All fields are required");
             return;
         }
-        const resp = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.app.github.dev/api/signup", { name, email, password }, {timeout: 2})
+        const resp = await axios.post("http://localhost:8000/api/signup", { name, email, password }, {timeout: 2})
                                 .catch(err => {
                                     console.log(err.code);
                                     console.log(err.message);

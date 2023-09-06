@@ -15,7 +15,7 @@ const SignIn = ({ navigation }) => {
             alert("All fields are required");
             return;
         }
-        const resp = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.app.github.dev/api/signin", { email, password }, {timeout: 2})
+        const resp = await axios.post("https://beige-poets-behave.loca.lt/api/signin", { email, password }, {timeout: 2})
                                 .catch(err => {
                                     console.log(err.code);
                                     console.log(err.message);
