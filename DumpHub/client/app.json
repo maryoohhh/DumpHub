@@ -23,7 +23,8 @@
           "fetch"
         ],
         "NSAllowArbitraryLoads": "YES"
-      }
+      },
+      "bundleIdentifier": "com.maryoohhh.DumpHub"
     },
     "android": {
       "permissions": [
