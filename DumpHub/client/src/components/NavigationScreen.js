@@ -37,7 +37,8 @@ const NavigationScreen = () => {
             }} />
                         <Stack.Screen name = "Account" component={Account} options={{ headerRight: () => <HeaderTabs />}} />
                         <Stack.Screen name = "Places" 
-                            component={PlaceDetail} screenOptions = {{ presentation: 'modal' }} />
+                            component={PlaceDetail} screenOptions = {{ presentation: 'modal' }} options={{
+                                headerShown: false }} />
                         {/* <Stack.Screen name = "Collections" component={Collections} />
                         <Stack.Screen name = "More" component={More} /> */}
                     </>
