@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function Header() {
   return (
-    <View style = {{ display: 'flex', flexDirection: 'row' , justifyContent: 'space-evenly', gap: 10, alignItems: 'center' }}>
+    <View style = {{ paddingTop: 40, display: 'flex', flexDirection: 'row' , justifyContent: 'space-evenly', gap: 10, alignItems: 'center' }}>
         <Image source = {require('./../../../assets/logo.png')}
             style = {styles.logo}
         />

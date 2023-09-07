@@ -9,9 +9,11 @@ import Home from "./screens/Home";
 import { AuthContext } from "../context/auth";
 import HeaderTabs from './header/HeaderTabs';
 import Account from "./screens/Account";
-import Collections from "./screens/Collections";
-import More from "./screens/More";
+// import Collections from "./screens/Collections";
+// import More from "./screens/More";
+import Search from "./containers/Search";
 import ForgotPassword from './screens/ForgotPassword';
+import HomeNavigation from "./screens/HomeNavigation";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +22,7 @@ const NavigationScreen = () => {
     const authenticated = state && state.token !== "" && state.user !== null;
 
     return (
-        <Stack.Navigator initialRouteName="Home"
+        <Stack.Navigator initialRouteName="HomeNavigation"
             screenOptions={{
                 headerShown: false
             }}
@@ -28,10 +30,11 @@ const NavigationScreen = () => {
             {authenticated ?
                 (
                     <>
-                        <Stack.Screen name = "Home" component = {Home} options={{ headerRight: () => <HeaderTabs />}} />
+                        <Stack.Screen name = "Home" component = {HomeNavigation} options={{ headerRight: () => <HeaderTabs />}} />
+                        <Stack.Screen name = "Search" component = {Search} />
                         <Stack.Screen name = "Account" component={Account} />
-                        <Stack.Screen name = "Collections" component={Collections} />
-                        <Stack.Screen name = "More" component={More} />
+                        {/* <Stack.Screen name = "Collections" component={Collections} />
+                        <Stack.Screen name = "More" component={More} /> */}
                     </>
                 ) : (
                 <>

@@ -35,50 +35,20 @@
 // }
 
 import React, { Component, useEffect, useRef } from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import * as Location from 'expo-location'
 import axios from 'axios';
-// import Geolocation from '@react-native-community/geolocation';
-
-// const latitudeDelta = 0.0922;
-// const longitudeDelta = 0.0421;
-// const initialLat = 47.61809949516797;
-// const initialLong = -122.34437917371241;
-
-// const initialPosition = {
-//     latitude: initialLat,
-//     longitude: initialLong,
-//     latitudeDelta: latitudeDelta,
-//     longitudeDelta: longitudeDelta,
-// };
 
 class Map extends Component {
     constructor() {
         super();
         this.state = {
-            // markers: [
-            // {
-            //     coordinate: {
-            //         latitude: 47.61809949516797,
-            //         longitude: -122.34437917371241
-            //     },
-            //     title: "City University of Seattle",
-            //     description:  "521 Wall St #100, Seattle, WA 98121"
-            // },
-            // {
-            //     coordinate: {
-            //         latitude: 47.61263875299939,
-            //         longitude: -122.17969764246408
-            //     },
-            //     title: "City University of Seattle",
-            //     description: "150 120th Ave NE, Bellevue, WA 98005" 
-            // }
-            // ],
             markers: [],
             initialPosition: null
         };
+        this.gpaRef = React.createRef()
     }
 
     async componentDidMount() {
@@ -98,17 +68,48 @@ class Map extends Component {
             longitudeDelta: 0.0421,
         }})
 
-        await axios.get('https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/restrooms').then(res => {
-            console.log('MARKERS', res)
+        await axios.get('https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/restrooms', {timeout: 10000}).then(res => {
+            
+            this.setState({markers: res.data.map(m => {
+                return {
+                    id: m._id,
+                    coordinate: {
+                        latitude: m.Y,
+                        longitude: m.X,
+         
+                    },
+                    title: m.name ?? "",
+                    description: m.description ?? ""
+                }
+            })})
         });
         // console.log('MARKERS', markers)
         // this.setState({markers: markers})
     }
 
+    search = async (value) => {
+        console.log('EVENT', value)
+        await axios.get('https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/restrooms', {timeout: 10000}).then(res => {
+            
+            this.setState({markers: res.data.map(m => {
+                return {
+                    id: m._id,
+                    coordinate: {
+                        latitude: m.Y,
+                        longitude: m.X,
+         
+                    },
+                    title: m.name ?? "",
+                    description: m.description ?? ""
+                }
+            })})
+        });
+    }
 
     render() {
         return (
             <SafeAreaView style={{flex: 1}}>
+                <Text style={{position: 'absolute', color: '#FFFFFF'}}>HELLO</Text>
                 {this.state.initialPosition ? <View style={styles.container}>
                 <MapView
                 onRegionChangeComplete={region => {
@@ -121,9 +122,10 @@ class Map extends Component {
                 region={this.state.initialPosition}
                 customMapStyle={mapStyle}
                 >
-                {/* { this.state.markers.length > 0 ? this.state.markers.map((marker, i) => {
+                { this.state.markers.length > 0 ? this.state.markers.map((marker, i) => {
                     return(
                         <Marker
+                            key={marker.id}
                             draggable
                             coordinate={marker.coordinate}
                             onDragEnd={
@@ -133,12 +135,23 @@ class Map extends Component {
                             description={marker.description}
                         />
                     );
-                }) : null} */}
+                }) : null}
                 <GooglePlacesAutocomplete
                 placeholder="Search"
+                ref={this.gpaRef}
+                textInputProps={{
+                    // onChangeText: (e) => { this.setState({search: e}) },
+                    onSubmitEditing: (e) =>{ 
+                        const text = e.nativeEvent.text;
+                        this.search(text)
+                    }
+                }}
+             
                 onPress={(data, details = null) => {
-                    console.log(JSON.stringify(details?.geometry?.location));
-                    this.setState({currentView: [details.geometry.location.lat, details.geometry.location.lng]})
+                    // console.log('enter pressed', this.state.search)
+                    // console.log('data,details', data, details, this.state.search)
+                    // console.log(JSON.stringify(details?.geometry?.location));
+                    // this.setState({currentView: [details.geometry.location.lat, details.geometry.location.lng]})
                     // moveToLocation(details?.geometry?.location.lat, details?.geometry?.location.lng);
                 }}
                 query={{key: 'AIzaSyAFEDZC2XNZPGRH04T9nMN4Zq9bGwIxF3o',

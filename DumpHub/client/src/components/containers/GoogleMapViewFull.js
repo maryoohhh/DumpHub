@@ -1,12 +1,10 @@
 import { View, Text, Dimensions } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
+import PlaceMarker from './PlaceMarker'
 import * as Location from 'expo-location'
-import { UserLocationContext } from './UserLocationContext';
-import PlaceMarker from './PlaceMarker';
-// import { UserLocationContext } from './UserLocationContext';
 
-export default function GoogleMapView({placeList}) {
+export default function GoogleMapViewFull({placeList}) {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     // const [mapRegion, setMapRegion] = useState([]);
@@ -40,15 +38,11 @@ export default function GoogleMapView({placeList}) {
     }, [location])
 
     return (
-        <View style = {{ marginTop: 20 }}>
-            <Text style = {{ fontSize: 20, marginBottom: 10, fontWeight: "600" }}>
-                Top Nearby Places
-            </Text>
-            <View style = {{ marginTop: 20, borderRadius: 20, overflow: 'hidden' }}>
-                {mapRegion ? <MapView 
+        <View>
+            {mapRegion ? <MapView 
                     style = {{ 
-                        width: Dimensions.get('screen').width*0.9,
-                        height: Dimensions.get('screen').height*0.3,
+                        width: Dimensions.get('screen').width,
+                        height: Dimensions.get('screen').height,
                     }}
                     provider = {PROVIDER_GOOGLE}
                     showsUserLocation={true}
@@ -62,7 +56,6 @@ export default function GoogleMapView({placeList}) {
                         <PlaceMarker item={item} />
                     ))}
                 </MapView> : <></>}
-            </View>
         </View>
     )
 }

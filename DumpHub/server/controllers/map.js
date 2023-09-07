@@ -23,3 +23,14 @@ exports.restrooms = async (req, res) => {
         
     }
 }
+
+exports.searchRestrooms = async (req, res ) => {
+    console.log('searching restrooms')
+    try {
+        Restrooms.find({"name": req.searchValue}, (err, restroom) => {
+
+        })
+    } catch (error) {
+        
+    }
+}
