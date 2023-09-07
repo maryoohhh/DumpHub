@@ -11,7 +11,7 @@ import HeaderTabs from './header/HeaderTabs';
 import Account from "./screens/Account";
 import Collections from "./screens/Collections";
 import More from "./screens/More";
-import ForgorPassword from './screens/forgotPassword';
+import ForgotPassword from './screens/ForgotPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +20,11 @@ const NavigationScreen = () => {
     const authenticated = state && state.token !== "" && state.user !== null;
 
     return (
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName="Home"
+            screenOptions={{
+                headerShown: false
+            }}
+        >
             {authenticated ?
                 (
                     <>

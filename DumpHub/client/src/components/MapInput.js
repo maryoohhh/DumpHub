@@ -1,54 +1,137 @@
-// import React from "react";
-// import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import React, { Component } from "react";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import { View, StyleSheet } from "react-native";
 
-// class MapInput extends React.Component {
-//     render() {
-//         return (
-//             <GooglePlacesAutocomplete
-//                 placeholder="Search"
-//                 minLength={2}
-//                 autoFocus={true}
-//                 returnKeyType={'search'}
-//                 listViewDisplayed={false}
-//                 fetchDetails={true}
-//                 onPress={(data, details = null) => {
-//                     this.props.notifyChange(details.geometry.location);
-//                 }}
-//                 query={{
-//                     key: 'AIzaSyCSsTnZJBdxPUDr5uY60J7UaYE6zKsFEvs',
-//                     language: 'en'
-//                 }}
-//                 nearbyPlacesAPI="GooglePlacesSearch"
-//                 debounce={300}
-//             />
-//         );
-//     }
-// }
+//Components
+import PlaceList from "../components/screens/PlaceList";
 
-// export default MapInput;
+class MapScreen extends Component {
+  //Set the HeaderTitle screen
+  static navigationOptions = props => {
+    const placeName = props.navigation.getParam("placeName");
+    return { headerTitle: placeName.toUpperCase() };
+  };
+  constructor(props) {
+    super(props);
+    //Initial State
+    this.state = {
+      lat: null,
+      long: null,
+      places: [],
+      isLoading: false,
+      placeType: "restaurant"
+    };
+  }
+  componentDidMount() {
+    console.log(this.props);
+    const { navigation } = this.props;
+    const placeType = navigation.getParam("placeType");
+    this.setState({ placeType: placeType });
 
-import React from 'react';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+    this.getCurrentLocation();
+  }
+  /**
+   * Get current user's position
+   */
+  getCurrentLocation() {
+    navigator.geolocation.getCurrentPosition(position => {
+      const lat = position.coords.latitude;
+      const long = position.coords.longitude;
+      this.setState({ lat: lat, long: long });
+      this.getPlaces();
+    });
+  }
 
-// navigator.geolocation = require('@react-native-community/geolocation');
-// navigator.geolocation = require('react-native-geolocation-service');
+  /**
+   * Get the Place URL
+   */
+  apiKey = 'AIzaSyAFEDZC2XNZPGRH04T9nMN4Zq9bGwIxF3o';
+  getPlacesUrl(lat, long, radius, type, apiKey) {
+    const baseUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?`;
+    const location = `location=${lat},${long}&radius=${radius}`;
+    const typeData = `&types=${type}`;
+    const api = `&key=${apiKey}`;
+    return `${baseUrl}${location}${typeData}${api}`;
+  }
 
-const MapInput = () => {
-  return (
-    <GooglePlacesAutocomplete
-      placeholder='Search'
-      onPress={(data, details = null) => {
-        // 'details' is provided when fetchDetails = true
-        console.log(data, details);
-      }}
-      query={{
-        key: 'AIzaSyAFEDZC2XNZPGRH04T9nMN4Zq9bGwIxF3o',
-        language: 'en',
-      }}
-      currentLocation={true}
-      currentLocationLabel='Current location'
-    />
-  );
-};
+  getPlaces() {
+    const { lat, long, placeType } = this.state;
+    const markers = [];
+    const url = this.getPlacesUrl(lat, long, 1500, placeType, GOOGLE_API_KEY);
+    fetch(url)
+      .then(res => res.json())
+      .then(res => {
+        res.results.map((element, index) => {
+          const marketObj = {};
+          marketObj.id = element.id;
+          marketObj.name = element.name;
+          marketObj.photos = element.photos;
+          marketObj.rating = element.rating;
+          marketObj.vicinity = element.vicinity;
+          marketObj.marker = {
+            latitude: element.geometry.location.lat,
+            longitude: element.geometry.location.lng
+          };
 
-export default MapInput;
+          markers.push(marketObj);
+        });
+        //update our places array
+        this.setState({ places: markers });
+      });
+  }
+
+  render() {
+    const { lat, long, places } = this.state;
+    return (
+      <View style={styles.container}>
+        <View style={styles.mapView}>
+          <MapView
+            style={{
+              flex: 1
+            }}
+            provider={PROVIDER_GOOGLE}
+            initialRegion={{
+              latitude: lat,
+              longitude: long,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421
+            }}
+          >
+            {places.map((marker, i) => (
+              <MapView.Marker
+                key={i}
+                coordinate={{
+                  latitude: marker.marker.latitude,
+                  longitude: marker.marker.longitude
+                }}
+                title={marker.name}
+              />
+            ))}
+          </MapView>
+        </View>
+        <View style={styles.placeList}>
+          <PlaceList places={places} />
+        </View>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  mapView: {
+    flex: 1,
+    justifyContent: "center",
+    height: "50%",
+    width: "100%"
+  },
+  placeList: {
+    flex: 1,
+    justifyContent: "center"
+  }
+});
+
+export default MapScreen;

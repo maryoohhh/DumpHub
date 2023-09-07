@@ -6,30 +6,45 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '../../context/auth';
 
 const SignUp = ({ navigation }) => {
+    
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
     const [state, setState] = useContext(AuthContext);
     
     const handleSubmit = async () => {
         if (name === '' || email === '' || password === '') {
-            allert("All fields are required");
+            alert("All fields are required");
             return;
         }
-        const resp = await axios.post("http://localhost:8000/api/signup", { name, email, password }, {timeout: 2})
-                                .catch(err => {
+        const body = {
+            name: name,
+            email: email,
+            password: password
+        }
+
+        // test
+        console.log('running post request', body);
+
+        const resp = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/signup", body, {timeout: 5000})
+                                .then(res => {
+                                    const { user, token } = res;
+                                    setState({
+                                        user: user,
+                                        token: token
+                                    });
+                                    AsyncStorage.setItem("auth-rn", JSON.stringify({
+                                        user: user,
+                                        token: token
+                                    }));
+                                    alert("Sign Up Successful");
+                                    navigation.navigate("Home");
+                                }).catch(err => {
                                     console.log(err.code);
                                     console.log(err.message);
                                     console.log(err.stack);
                                 });
-        if(resp.data.error)
-            alert(resp.data.error)
-        else {
-            setState(resp.data);
-            await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data));
-            alert("Sign Up Successful");
-            navigation.navigate("Main");
-        }
     }
 
     const logo = require("/workspaces/DumpHub/DumpHub/client/assets/logo.png"); 

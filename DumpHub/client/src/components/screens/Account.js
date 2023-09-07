@@ -17,34 +17,43 @@ const Account = ({ navigation }) => {
     const [state, setState] = useContext(AuthContext);
     const [uploadImage, setUploadImage] = useState("");
 
-    useEffect(() => {
-        if (state) {
-            const { name, email, role, image } = state.user;
-            setName(name);
-            setEmail(email);
-            setRole(role);
-            setImage(image);
-        }
-    }, [state]);
+    // useEffect(() => {
+    //     if (state) {
+    //         const { name, email, role, image } = state.user;
+    //         setName(name);
+    //         setEmail(email);
+    //         setRole(role);
+    //         setImage(image);
+    //     }
+    // }, [state]);
 
     const handleSubmit = async () => {
         try {
             let storedData = await AsyncStorage.getItem("auth-rn");
             const user = JSON.parse(storedData);
             console.log(user)
-            const resp = await axios.post("http://localhost:8000/api/update-password", { password, user });
-            const data = resp.data;
-            if(data.error)
-                alert(data.error)
-            else {
-                alert("Password updated successfully");
-                setPassword("");
-            }
-        } catch (error) {
+            const resp = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/update-password", { password, user })
+                                    .then(res => {
+                                        const data = res;
+                                        console.log(res)
+                                        alert("Password updated successfully");
+                                        setPassword("");
+                                    })
+                                    .catch(err => {
+                                        console.log(err)
+                                    });
+        //     const data = resp.data;
+        //     if(data.error)
+        //         alert(data.error)
+        //     else {
+        //         alert("Password updated successfully");
+        //         setPassword("");
+        //     }
+        } catch (err) {
             alert("Password update failed");
-            console.log(error);
+            console.log(err);
         }
-    };
+    }
 
     const handleUpload = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -53,11 +62,17 @@ const Account = ({ navigation }) => {
             return;
         }
         let pickerResult = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
+            quality: 1,
             base64: true,
         });
-        if (pickerResult.canceled === true) {
+        // let pickerResult = await ImageCropPicker.openPicker({
+        //     mediaType: 'photo',
+        //     cropping: false
+        // })
+        if (pickerResult.cancelled === true) {
             return;
         }
         let base64Image = `data:image/jpg;base64, ${pickerResult.base64}`;
@@ -65,19 +80,30 @@ const Account = ({ navigation }) => {
 
         let storedData = await AsyncStorage.getItem("auth-rn");
         const parsed = JSON.parse(storedData);
-        const { data } = await axios.post("http://localhost:8000/api/upload-image", {
+        const { data } = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/upload-image", {
             image: base64Image,
             user: parsed.user
-        });
-        console.log("UPLOADED RESPONSE => ", data);
-        // upload async storage
-        const stored = JSON.parse(await AsyncStorage.getItem("auth-rn"));
-        stored.user = data;
-        await AsyncStorage.setItem("auth-rn", JSON.stringify(stored));
-        // update context
-        setState({ ...state, user: data });
-        setImage(data.image);
-        alert("Profile image saved");
+        })
+                                    .then(data => {
+                                        console.log("UPLOADED RESPONSE => ", data);
+                                        // upload async storage
+                                        const stored = JSON.parse(AsyncStorage.getItem("auth-rn"));
+                                        stored.user = data;
+                                        AsyncStorage.setItem("auth-rn", JSON.stringify(stored));
+                                        // update context
+                                        setState({ ...state, user: data });
+                                        setImage(data.image);
+                                        alert("Profile image saved");
+                                    })
+        // console.log("UPLOADED RESPONSE => ", data);
+        // // upload async storage
+        // const stored = JSON.parse(await AsyncStorage.getItem("auth-rn"));
+        // stored.user = data;
+        // await AsyncStorage.setItem("auth-rn", JSON.stringify(stored));
+        // // update context
+        // setState({ ...state, user: data });
+        // setImage(data.image);
+        // alert("Profile image saved");
     };
 
     const logo = require("/workspaces/DumpHub/DumpHub/client/assets/logo.png"); 

@@ -19,19 +19,19 @@ const AuthProvider = ({ children }) => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     // handle expired token or 401 error
-    axios.interceptors.response.use(
-        async function (response) {
-            return response;
-        },
-        async function (error) {
-            let res = error.response;
-            if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
-                await AsyncStorage.removeItem("auth-rn");
-                setState({ user: nullo, token: "" });
-                navigation.navigate("SignIn");
-            }
-        }
-    );
+    // axios.interceptors.response.use(
+    //     async function (response) {
+    //         return response;
+    //     },
+    //     async function (error) {
+    //         let res = error.response;
+    //         if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
+    //             await AsyncStorage.removeItem("auth-rn");
+    //             setState({ user: null, token: "" });
+    //             navigation.navigate("SignIn");
+    //         }
+    //     }
+    // );
 
     useEffect(() => {
         const loadFromAsyncStorage = async () => {

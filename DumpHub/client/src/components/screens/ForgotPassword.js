@@ -15,7 +15,7 @@ const ForgotPassword = ({ navigation }) => {
             return;
         }
         try {
-            const { data } = await axios.post("http://localhost:8000/api/forgot-password",  { email });
+            const { data } = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/forgot-password",  { email });
             if (data.error) alert(data.error)
             else {
                 setVisible(true);
@@ -29,7 +29,7 @@ const ForgotPassword = ({ navigation }) => {
 
     const handlePasswordReset = async () => {
         try {
-            const { data } = await axios.post("http://localhost:8000/api/reset-password", { email, resetCode, password });
+            const { data } = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/reset-password", { email, resetCode, password });
             if (data.error) alert(data.error);
             else {
                 alert("Now you can login with your new password");

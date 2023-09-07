@@ -1,4 +1,5 @@
 const User = require("../models/user");
+// const Restrooms = require("../models/restrooms");
 const jwt = require("jsonwebtoken");
 const { hashPassword, comparePassword } = require("../helpers/auth");
 const { nanoid } = require("nanoid");
@@ -212,3 +213,18 @@ exports.updatePassword = async (req, res) => {
         console.log(err);
     }
 };
+
+// exports.restrooms = async (req, res) => {
+//     console.log('getting markers');
+//     try {
+//         const markers = await Restrooms.getCollection("restroom")
+//         console.log(markers)
+//     } catch (error) {
+        
+//     }
+// }
+
+// exports.test = async (req, res ) => {
+//     console.log('request', req)
+//     return res.send('HELLO')
+// }

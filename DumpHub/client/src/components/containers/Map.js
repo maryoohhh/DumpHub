@@ -1,57 +1,127 @@
+// import React, { Component } from 'react';;
+// import { View, Text, StyleSheet } from 'react-native';
+// import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+// import { Marker, Callout } from 'react-native-maps';
+
+// export default class Map extends Component {
+//     mapSection = () => {
+//         <View style = {{ height: "75%" }} >
+//             <MapView style = {{ ...StyleSheet.absoluteFillObject }}
+//                 provider='google'
+//                 ref={(ref) => { this.mapRef = ref }}
+//                 initialRegion={{
+//                     latitude: 47.61809949516797,
+//                     longitude: -122.34437917371241,
+//                     latitudeDelta: 0.0922,
+//                     longitudeDelta: 0.0421,
+//                 }}>
+
+//             </MapView>
+//         </View>
+//     }
+    
+//     render() {
+//         return (
+//             <View style = {{ flexDirection: "column" }}>
+//                 <View style = {{ height: "25%", flexDirection: "column" }}>
+//                     <Text>
+
+//                     </Text>
+//                 </View>
+//                 {this.mapSection()}
+//             </View>
+//         );
+//     }
+// }
+
 import React, { Component, useEffect, useRef } from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import * as Location from 'expo-location'
+import axios from 'axios';
 // import Geolocation from '@react-native-community/geolocation';
 
-import config from "../../config/index"
+// const latitudeDelta = 0.0922;
+// const longitudeDelta = 0.0421;
+// const initialLat = 47.61809949516797;
+// const initialLong = -122.34437917371241;
+
+// const initialPosition = {
+//     latitude: initialLat,
+//     longitude: initialLong,
+//     latitudeDelta: latitudeDelta,
+//     longitudeDelta: longitudeDelta,
+// };
 
 class Map extends Component {
     constructor() {
         super();
         this.state = {
-            markers: [
-            {
-                coordinate: {
-                    latitude: 47.61809949516797,
-                    longitude: -122.34437917371241
-                },
-                title: "City University of Seattle",
-                description:  "521 Wall St #100, Seattle, WA 98121"
-            },
-            {
-                coordinate: {
-                    latitude: 47.61263875299939,
-                    longitude: -122.17969764246408
-                },
-                title: "City University of Seattle",
-                description: "150 120th Ave NE, Bellevue, WA 98005" 
-            }
-            ]
+            // markers: [
+            // {
+            //     coordinate: {
+            //         latitude: 47.61809949516797,
+            //         longitude: -122.34437917371241
+            //     },
+            //     title: "City University of Seattle",
+            //     description:  "521 Wall St #100, Seattle, WA 98121"
+            // },
+            // {
+            //     coordinate: {
+            //         latitude: 47.61263875299939,
+            //         longitude: -122.17969764246408
+            //     },
+            //     title: "City University of Seattle",
+            //     description: "150 120th Ave NE, Bellevue, WA 98005" 
+            // }
+            // ],
+            markers: [],
+            initialPosition: null
         };
     }
 
-    getRestrooms() {
-        fetch('${config.url}api/restrooms')
+    async componentDidMount() {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        // setLocation(location);
+
+        this.setState({initialPosition: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+        }})
+
+        await axios.get('https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/restrooms').then(res => {
+            console.log('MARKERS', res)
+        });
+        // console.log('MARKERS', markers)
+        // this.setState({markers: markers})
     }
-    
+
+
     render() {
         return (
             <SafeAreaView style={{flex: 1}}>
-            <View style={styles.container}>
+                {this.state.initialPosition ? <View style={styles.container}>
                 <MapView
                 onRegionChangeComplete={region => {
                     this.setState({currentView: region})
                 }}
                 style={styles.mapStyle}
-                initialRegion={{
-                    latitude: 47.61809949516797,
-                    longitude: -122.34437917371241,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-                customMapStyle={mapStyle}>
-                { this.state.markers.map((marker, i) => {
+                provider={PROVIDER_GOOGLE}
+                showsUserLocation={true}
+                // initialRegion={initialPosition}
+                region={this.state.initialPosition}
+                customMapStyle={mapStyle}
+                >
+                {/* { this.state.markers.length > 0 ? this.state.markers.map((marker, i) => {
                     return(
                         <Marker
                             draggable
@@ -63,22 +133,14 @@ class Map extends Component {
                             description={marker.description}
                         />
                     );
-                })}
-                {/* <Marker
-                    draggable
-                    coordinate={{
-                    latitude: 47.61809949516797,
-                    longitude: -122.34437917371241,
-                    }}
-                    onDragEnd={
-                    (e) => alert(JSON.stringify(e.nativeEvent.coordinate))
-                    }
-                    title={'Test Marker'}
-                    description={'This is a description of the marker'}
-                /> */}
+                }) : null} */}
                 <GooglePlacesAutocomplete
                 placeholder="Search"
-                onPress={(data, details = null) => console.log(data, details)}
+                onPress={(data, details = null) => {
+                    console.log(JSON.stringify(details?.geometry?.location));
+                    this.setState({currentView: [details.geometry.location.lat, details.geometry.location.lng]})
+                    // moveToLocation(details?.geometry?.location.lat, details?.geometry?.location.lng);
+                }}
                 query={{key: 'AIzaSyAFEDZC2XNZPGRH04T9nMN4Zq9bGwIxF3o',
                         components: 'country:us',
                         language: 'en'}}
@@ -118,10 +180,10 @@ class Map extends Component {
                 }}
                 />
                 </MapView>
-            </View>
+            </View> : null}
             </SafeAreaView>
         );
-    }
+    };
 }
 
 const mapStyle = [
