@@ -1,10 +1,17 @@
 import { Share } from "react-native"
 
 const SharePlace=(place)=>{
-    Share.share({
-        title:'Share Business',
-        message: 'Business Name: ' + place.name + "\n" + "Address: " + place.vicinity?place.vicinity:place.formatted_address,
-    })
+
+    const address = place?.vicinity ? place?.vicinity : place.formatted_address;
+
+    try {
+        Share.share({
+            title:'Share Business',
+            message: "Restroom Name: " + place.name + "\n" + "Address: " + address,
+        })
+    } catch (error) {
+        // handle error
+    }
 }
 
 export default {

@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect, useContext } from 'react';
 import { View, Text } from 'react-native';
 // import Map from '../containers/Map';
 import FooterList from '../footer/FooterList';
-import Header from '../containers/Header';
+// import Header from '../containers/Header';
 import GoogleMapView from '../containers/GoogleMapView';
 // import List from '../containers/List';
 import GlobalApi from '../../config/GlobalApi';
@@ -17,14 +17,17 @@ export default function Home() {
     // const { location, setLocation } = useContext(UserLocationContext);
 
     useEffect(()=>{
-        GetNearBySearchPlace()
-    },[])
-    
-    const GetNearBySearchPlace=()=>{
-        GlobalApi.nearByPlace().then(resp=>{
+        // GetNearBySearchPlace()
+        GlobalApi.loadRestroomsNearby().then(resp => {
             setPlaceList(resp.data.results)
         })
-    }
+    },[])
+    
+    // const GetNearBySearchPlace=()=>{
+    //     GlobalApi.nearByPlace().then(resp=>{
+    //         setPlaceList(resp.data.results)
+    //     })
+    // }
     
     // render() {
     return (

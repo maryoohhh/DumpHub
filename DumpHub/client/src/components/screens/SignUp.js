@@ -29,7 +29,9 @@ const SignUp = ({ navigation }) => {
 
         const resp = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/signup", body, {timeout: 5000})
                                 .then(res => {
-                                    const { user, token } = res;
+                                    const { user, token } = res.data;
+
+
                                     setState({
                                         user: user,
                                         token: token

@@ -21,16 +21,20 @@ const SignIn = ({ navigation }) => {
             password: password
         }
 
-        // test
-        console.log('running post request', body);
-
         const resp = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/signin", body, {timeout: 5000})
                                 .then(res => {
-                                    const { user, token } = res;
+
+
+                                    console.log('RESPONSE', res)
+                                    
+
+                                    const { user, token } = res.data;
                                     setState({
                                         user: user,
                                         token: token
                                     });
+
+
                                     AsyncStorage.setItem("auth-rn", JSON.stringify({
                                         user: user,
                                         token: token
@@ -38,6 +42,7 @@ const SignIn = ({ navigation }) => {
                                     alert("Sign In Successful");
                                     navigation.navigate("Home");
                                 }).catch(err => {
+                                    console.log('SIGNINERROR')
                                     console.log(err.code);
                                     console.log(err.message);
                                     console.log(err.stack);

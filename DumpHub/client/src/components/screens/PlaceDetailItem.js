@@ -41,7 +41,7 @@ export default function PlaceDetailItem({place, onDirectionClick}) {
             </Text>
         ) : null}
         <View style = {{ marginTop: 10, flexDirection: 'row', display: 'flex', gap: 10 }}>
-            <TouchableOpacity onPress={()=>onDirectionClick()}
+            <TouchableOpacity onPress={()=> place ? onDirectionClick() : console.log('NOTHING TO SHARE')}
                 style = {{ direction: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -55,7 +55,9 @@ export default function PlaceDetailItem({place, onDirectionClick}) {
                     <Ionicons name = "navigate-circle-outline" size = {24} color= 'black' />
                     <Text style = {{ fontSize: 16}}>Direction</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>Share.SharePlace(place)} style = {{ direction: 'flex',
+            <TouchableOpacity onPress={()=> {
+                place ? Share.SharePlace(place) : console.log('NO RESTROOM')
+            }} style = {{ direction: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
                         gap: 5,

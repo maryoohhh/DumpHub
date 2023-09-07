@@ -7,7 +7,10 @@ export default function PlaceList({ placeList }) {
     const navigator=useNavigation();
 
     const onPlaceClick=(item)=>{
-        navigator.navigate('place-detail', {place:item})
+
+        console.log('item', navigator)
+
+        navigator.navigate('Places',  { place:item})
     }
   
     return (

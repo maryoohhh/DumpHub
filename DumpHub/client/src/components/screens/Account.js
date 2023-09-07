@@ -14,8 +14,9 @@ const Account = ({ navigation }) => {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("");
     const [image, setImage] = useState({ url: "", public_id: "" });
-    const [state, setState] = useContext(AuthContext);
+    // const [state, setState] = useContext(AuthContext);
     const [uploadImage, setUploadImage] = useState("");
+    const [user, setUser] = useState();
 
     // useEffect(() => {
     //     if (state) {
@@ -28,27 +29,39 @@ const Account = ({ navigation }) => {
     // }, [state]);
 
     const handleSubmit = async () => {
+        console.log('HANDLE SUBMIT')
         try {
-            let storedData = await AsyncStorage.getItem("auth-rn");
+
+            let storedData = await AsyncStorage.getItem("auth-rn")
+        
+            
             const user = JSON.parse(storedData);
             console.log(user)
-            const resp = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/update-password", { password, user })
+            const body = {
+                password: password,
+                user: user
+            }
+            console.log('BODY', body)
+
+            // const prod = "https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev";
+            const resp = await axios.post("https://urban-xylophone-4q6pqg49j7pf7xv6-8000.preview.app.github.dev/api/update-password", body)
                                     .then(res => {
+                                        console.log('RESPONSE', res)
                                         const data = res;
-                                        console.log(res)
+                                        
                                         alert("Password updated successfully");
                                         setPassword("");
                                     })
                                     .catch(err => {
-                                        console.log(err)
+                                        console.log('ERROR', err)
                                     });
-        //     const data = resp.data;
-        //     if(data.error)
-        //         alert(data.error)
-        //     else {
-        //         alert("Password updated successfully");
-        //         setPassword("");
-        //     }
+            // const data = resp.data;
+            // if(data.error)
+            //     alert(data.error)
+            // else {
+            //     alert("Password updated successfully");
+            //     setPassword("");
+            // }
         } catch (err) {
             alert("Password update failed");
             console.log(err);

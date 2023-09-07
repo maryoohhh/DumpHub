@@ -5,14 +5,18 @@ import Home from './Home';
 import PlaceDetail from './PlaceDetail';
 
 export default function HomeNavigation() {
+    
     const Stack = createNativeStackNavigator();
+
     return (
         <Stack.Navigator
-        screenOptions={{headerShown: false, gestureEnabled: true }}>
+            screenOptions={{headerShown: false, gestureEnabled: true }}>
             <Stack.Screen name = 'home' component = {Home} />
-            <Stack.Screen name = "place-detail" component={PlaceDetail} 
-                screenOptions = {{
-                    presentation: 'modal' }} />
+            {/* <Stack.Screen name = 'place-deatils-page' component = {() => {
+                return <View></View>}} /> */}
+            <Stack.Screen 
+                name = "place-details-page" 
+                component={PlaceDetail} screenOptions = {{ presentation: 'modal' }} />
         </Stack.Navigator>
     )
 }

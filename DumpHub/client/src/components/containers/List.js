@@ -20,12 +20,12 @@ export default function List({placeList}) {
           data={placeList}
           horizontal={true}
           renderItem={({item,index})=>index<=6&&(
-          <TouchableOpacity onPress={()=>navigation.navigate(
-              'place-detail',
-              {
-                  place:item
+          <TouchableOpacity onPress={
+              ()=> {
+                
+                navigation.navigate('Places',{ place: item })
               }
-          )}>
+            }>
               <Item place={item} />
           </TouchableOpacity>
           )}

@@ -13,6 +13,15 @@ export default function Search() {
    },[])
 
     const GetNearBySearchPlace=(value)=>{
+        // GlobalApi.searchByText(value).then(resp=>{
+        //     setPlaceList(resp.data.results);
+        // })
+        GlobalApi.loadRestroomsNearby().then(resp => {
+            setPlaceList(resp.data.results)
+        })
+    }
+
+    const SearchByPlace = (value) => {
         GlobalApi.searchByText(value).then(resp=>{
             setPlaceList(resp.data.results);
         })
@@ -21,7 +30,7 @@ export default function Search() {
     return (
         <View>
             <View style={{position:'absolute',zIndex:20}}>
-                <SearchBar setSearchText={(value)=>GetNearBySearchPlace(value)} />
+                <SearchBar setSearchText={(value)=>SearchByPlace(value)} />
             </View>
         
             <GoogleMapViewFull placeList={placeList}/>
